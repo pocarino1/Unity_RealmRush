@@ -4,8 +4,11 @@ using UnityEngine;
 using TMPro;
 
 [ExecuteAlways]
+[RequireComponent(typeof(TextMeshPro))]
 public class CoordinateLabeler : MonoBehaviour
 {
+    [SerializeField] private int TileWidth = 10;
+    [SerializeField] private int TileHeight = 10;
     [SerializeField] private Color BaseColor = Color.white;
     [SerializeField] private Color BlockedColor = Color.gray;
 
@@ -31,7 +34,8 @@ public class CoordinateLabeler : MonoBehaviour
         if(!Application.isPlaying)
         {
             DisplayCoordinates();
-            UpdateObjectName();           
+            UpdateObjectName(); 
+            CoordinateLabel.enabled = true;          
         }
 
         UpdateCoordinatesColor();
@@ -40,8 +44,8 @@ public class CoordinateLabeler : MonoBehaviour
 
     private void DisplayCoordinates()
     {
-        Coordinates.x = Mathf.RoundToInt(transform.parent.position.x / UnityEditor.EditorSnapSettings.move.x);
-        Coordinates.y = Mathf.RoundToInt(transform.parent.position.z / UnityEditor.EditorSnapSettings.move.z);
+        Coordinates.x = Mathf.RoundToInt(transform.parent.position.x / TileWidth);
+        Coordinates.y = Mathf.RoundToInt(transform.parent.position.z / TileHeight);
 
         CoordinateLabel.text = Coordinates.x + "," + Coordinates.y;
     }

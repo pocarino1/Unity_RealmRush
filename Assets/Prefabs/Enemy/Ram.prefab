@@ -128,8 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2d1bbf8b18c7bb4bbd77649a6d07c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path: []
-  MovingSpeed: 1
+  MovingSpeed: 0.5
 --- !u!65 &6034441444361183400
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -155,7 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ab95609b467984dba65b8da2a0a704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 100
+  MaxHealth: 60
+  DifficultyIncreaseHealth: 100
 --- !u!114 &-8354567561537208640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,3 +168,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b289a5c816c1c43bacbd369a1d5c1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GoldReward: 25
+  GoldPenalty: 25

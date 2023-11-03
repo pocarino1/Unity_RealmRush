@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3049131714819384361}
   - component: {fileID: 6874049369434347171}
+  - component: {fileID: -3010959892696812119}
   m_Layer: 0
   m_Name: Ballista
   m_TagString: Untagged
@@ -46,7 +47,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponTransform: {fileID: 3144582324300694500}
+  AttackRange: 15
   Arrow: {fileID: 8076683314057373327}
+--- !u!114 &-3010959892696812119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3219458064393657486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4b3c9c322c700438b2fa8ef7fe92f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CreateCost: 75
 --- !u!1 &3386339518832752038
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +177,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 1.5
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -912,7 +927,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.75
       minScalar: 10
       maxCurve:
         serializedVersion: 2

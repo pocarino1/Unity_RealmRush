@@ -5,6 +5,7 @@ using UnityEngine;
 public class TargetLocator : MonoBehaviour
 {
     [SerializeField] private Transform WeaponTransform = null;
+    [SerializeField] private float AttackRange = 15.0f;
     [SerializeField] private ParticleSystem Arrow = null;
 
     private Enemy TargetEnemy = null;
@@ -12,12 +13,30 @@ public class TargetLocator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(TargetEnemy == null || !TargetEnemy.gameObject.activeSelf)
+        bool ChangeTargetEnemy = ChecekChangeTargetEnemy();
+        if(ChangeTargetEnemy)
         {
+            Attack(false);
             FindEnemyTarget();
         }
 
         AimWeapon();
+    }
+
+    private bool ChecekChangeTargetEnemy()
+    {
+        if(TargetEnemy == null || !TargetEnemy.gameObject.activeSelf)
+        {
+            return true;
+        }
+
+        float TargetDistance = Vector3.Distance(transform.position, TargetEnemy.transform.position);
+        if(AttackRange < TargetDistance)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void FindEnemyTarget()
@@ -41,32 +60,27 @@ public class TargetLocator : MonoBehaviour
 
     private void AimWeapon()
     {
-        if(TargetEnemy == null || !TargetEnemy.gameObject.activeSelf)
-        {
-            StopShotArrow();
-            return;
-        }
-
         if(WeaponTransform != null)
         {
             WeaponTransform.LookAt(TargetEnemy.transform);
-            StartShotArrow();
+
+            float TargetDistance = Vector3.Distance(transform.position, TargetEnemy.transform.position);
+            if(AttackRange > TargetDistance)
+            {
+                Attack(true);
+            }
         }
     }
 
-    private void StartShotArrow()
+    private void Attack(bool Active)
     {
-        if(Arrow != null && !Arrow.isPlaying)
+        if(Arrow != null)
         {
-            Arrow.Play();
-        }
-    }
-
-    private void StopShotArrow()
-    {
-        if(Arrow != null && Arrow.isPlaying)
-        {
-            Arrow.Stop();
+            ParticleSystem.EmissionModule ArrowEmissionModule = Arrow.emission;
+            if(ArrowEmissionModule.enabled != Active)
+            {
+                ArrowEmissionModule.enabled = Active;
+            }
         }
     }
 }

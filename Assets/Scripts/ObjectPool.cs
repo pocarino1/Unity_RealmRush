@@ -5,8 +5,8 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private GameObject EnemyPrefab = null;
-    [SerializeField] private int EnemyPoolSize = 5;
-    [SerializeField] private float EnemySpawnDelayTime = 1.0f;
+    [SerializeField] [Range(0, 50)] private int EnemyPoolSize = 5;
+    [SerializeField] [Range(0.1f, 30.0f)] private float EnemySpawnDelayTime = 1.0f;
 
     private GameObject[] EnemyPool;
 
@@ -26,7 +26,7 @@ public class ObjectPool : MonoBehaviour
 
     private void PopulatePool()
     {
-        if (EnemyPrefab != null)
+        if (EnemyPrefab != null && EnemyPoolSize > 0)
         {
             EnemyPool = new GameObject[EnemyPoolSize];
 

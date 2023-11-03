@@ -2,10 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] private List<Waypoint> Path = new List<Waypoint>();
     [SerializeField] [Range(0.0f, 5.0f)] private float MovingSpeed = 1.0f;
+
+    private List<Waypoint> Path = new List<Waypoint>();
+    private Enemy EnemyClass = null;
+
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
+    private void Start()
+    {
+        EnemyClass = GetComponent<Enemy>();
+    }
 
     void OnEnable()
     {
@@ -19,10 +31,14 @@ public class EnemyMover : MonoBehaviour
     {
         Path.Clear();
 
-        GameObject[] TileWaypoints = GameObject.FindGameObjectsWithTag("Path");
-        foreach(GameObject waypoint in TileWaypoints)
+        GameObject TileWaypointParent = GameObject.FindGameObjectWithTag("Path");
+        foreach(Transform Child in TileWaypointParent.transform)
         {
-            Path.Add(waypoint.GetComponent<Waypoint>());
+            Waypoint ChildWaypoint = Child.GetComponent<Waypoint>();
+            if(ChildWaypoint != null)
+            {
+                Path.Add(ChildWaypoint);
+            }
         }
     }
 
@@ -48,6 +64,16 @@ public class EnemyMover : MonoBehaviour
 
                 yield return new WaitForEndOfFrame();
             }
+        }
+
+        FinishPath();
+    }
+
+    private void FinishPath()
+    {
+        if(EnemyClass != null)
+        {
+            EnemyClass.StealGold();
         }
 
         gameObject.SetActive(false);
