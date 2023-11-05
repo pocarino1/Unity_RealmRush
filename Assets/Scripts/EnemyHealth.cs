@@ -10,6 +10,7 @@ public class EnemyHealth : MonoBehaviour
     
     private int CurrentHealth = 0;
     private Enemy EnemyClass = null;
+    private int EnemyLevel = 1;
 
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
@@ -31,16 +32,18 @@ public class EnemyHealth : MonoBehaviour
     /// <param name="other">The GameObject hit by the particle.</param>
     private void OnParticleCollision(GameObject other)
     {
-        int Damege = Random.Range(20, 35);
-        CurrentHealth -= Damege;
+        Tower TowerComponent = other.GetComponentInParent<Tower>();
+        int Damage = TowerComponent != null ? TowerComponent.GetAttackDamage() : Random.Range(20, 35);
+        CurrentHealth -= Damage;
 
         if(CurrentHealth <= 0)
         {
             if(EnemyClass != null)
             {
-                EnemyClass.RewardGold();
+                EnemyClass.RewardGold(EnemyLevel);
             }
 
+            EnemyLevel++;
             MaxHealth += DifficultyIncreaseHealth;
             gameObject.SetActive(false);
         }

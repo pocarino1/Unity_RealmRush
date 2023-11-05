@@ -15,11 +15,11 @@ public class Enemy : MonoBehaviour
         UserBank = FindObjectOfType<Bank>();
     }
 
-    public void RewardGold()
+    public void RewardGold(int Level)
     {
         if(UserBank != null)
         {
-            UserBank.ChangeGold(GoldReward);
+            UserBank.ChangeGold(GoldReward + Level);
         }
     }
 

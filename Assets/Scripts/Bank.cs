@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class Bank : MonoBehaviour
 {
     [SerializeField] private int StartingGold = 150;
+    [SerializeField] private int IncreaseGoldValue = 3;
+    [SerializeField] private float IncreaseDelayTime = 2.0f;
     [SerializeField] private TextMeshProUGUI GoldUI = null;
 
     private int CurrentGold = 0;
@@ -25,6 +27,14 @@ public class Bank : MonoBehaviour
     private void Awake()
     {
         CurrentGold = StartingGold;
+        UpdateGoldText();
+
+        InvokeRepeating("IncreaseGold", IncreaseDelayTime, IncreaseDelayTime);
+    }
+
+    private void IncreaseGold()
+    {
+        CurrentGold += IncreaseGoldValue;
         UpdateGoldText();
     }
 

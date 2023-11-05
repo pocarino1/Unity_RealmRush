@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Waypoint : MonoBehaviour
 {
@@ -8,20 +9,36 @@ public class Waypoint : MonoBehaviour
     [SerializeField] private bool IsPlaceable = false;
 
     public bool Placeable { get { return IsPlaceable; } set { IsPlaceable = value; } }
+    private GameObject TowerObject = null;
 
     /// <summary>
-    /// OnMouseDown is called when the user has pressed the mouse button while
-    /// over the GUIElement or Collider.
+    /// OnMouseUp is called when the user has released the mouse button.
     /// </summary>
-    private void OnMouseDown()
+    private void OnMouseUp()
     {
-        if(IsPlaceable)
+        bool IsGameObjectPointer = EventSystem.current.IsPointerOverGameObject();
+        if (!IsGameObjectPointer)
         {
-            if(TowerPrefab != null)
+            if (IsPlaceable)
             {
-                if(TowerPrefab.CreateTower(TowerPrefab, transform.position))
+                if (TowerPrefab != null)
                 {
-                    IsPlaceable = false;
+                    TowerObject = TowerPrefab.CreateTower(TowerPrefab, transform.position);
+                    if (TowerObject != null)
+                    {
+                        IsPlaceable = false;
+                    }
+                }
+            }
+            else
+            {
+                if (TowerObject != null)
+                {
+                    Tower TowerComponent = TowerObject.GetComponent<Tower>();
+                    if (TowerComponent != null && TowerComponent.IsEnableLevelUp())
+                    {
+                        TowerComponent.SetVisibleUpgradeUI(true);
+                    }
                 }
             }
         }
