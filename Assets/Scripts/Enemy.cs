@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
 
     public void RewardGold(int Level)
     {
-        if(UserBank != null)
+        if (UserBank != null)
         {
             UserBank.ChangeGold(GoldReward + Level);
         }
@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
 
     public void StealGold()
     {
-        if(UserBank != null)
+        if (UserBank != null)
         {
             UserBank.ChangeGold(-GoldPenalty);
         }

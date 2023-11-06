@@ -60,7 +60,7 @@ public class TargetLocator : MonoBehaviour
 
     private void AimWeapon()
     {
-        if(WeaponTransform != null)
+        if(WeaponTransform != null && TargetEnemy != null)
         {
             WeaponTransform.LookAt(TargetEnemy.transform);
 

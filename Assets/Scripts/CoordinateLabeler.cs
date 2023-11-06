@@ -7,14 +7,15 @@ using TMPro;
 [RequireComponent(typeof(TextMeshPro))]
 public class CoordinateLabeler : MonoBehaviour
 {
-    [SerializeField] private int TileWidth = 10;
-    [SerializeField] private int TileHeight = 10;
     [SerializeField] private Color BaseColor = Color.white;
     [SerializeField] private Color BlockedColor = Color.gray;
+    [SerializeField] private Color ExploredColor = Color.yellow;
+    [SerializeField] private Color PathColor = new Color(1.0f, 0.5f, 0.0f);
 
     private TextMeshPro CoordinateLabel = null;
     private Vector2Int Coordinates = new Vector2Int();
-    private Waypoint TileWaypoint = null;
+    private Tile TileWaypoint = null;
+    private GridManager GameGridManager = null;
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -24,7 +25,8 @@ public class CoordinateLabeler : MonoBehaviour
         CoordinateLabel = GetComponent<TextMeshPro>();
         CoordinateLabel.enabled = false;
         
-        TileWaypoint = GetComponentInParent<Waypoint>();
+        TileWaypoint = GetComponentInParent<Tile>();
+        GameGridManager = FindObjectOfType<GridManager>();
 
         DisplayCoordinates();
     }
@@ -44,8 +46,8 @@ public class CoordinateLabeler : MonoBehaviour
 
     private void DisplayCoordinates()
     {
-        Coordinates.x = Mathf.RoundToInt(transform.parent.position.x / TileWidth);
-        Coordinates.y = Mathf.RoundToInt(transform.parent.position.z / TileHeight);
+        Coordinates.x = Mathf.RoundToInt(transform.parent.position.x / TileSize.Width);
+        Coordinates.y = Mathf.RoundToInt(transform.parent.position.z / TileSize.Height);
 
         CoordinateLabel.text = Coordinates.x + "," + Coordinates.y;
     }
@@ -57,7 +59,32 @@ public class CoordinateLabeler : MonoBehaviour
 
     private void UpdateCoordinatesColor()
     {
-        CoordinateLabel.color = TileWaypoint != null && TileWaypoint.Placeable ? BaseColor : BlockedColor;
+        if(GameGridManager != null)
+        {
+            Node node = GameGridManager.GetNode(Coordinates);
+            if(node != null)
+            {
+                CoordinateLabel.color = node.isWalkable ? BaseColor : BlockedColor;
+
+                if(node.isExplored)
+                {
+                    CoordinateLabel.color = ExploredColor;
+                }
+
+                if(node.isPath)
+                {
+                    CoordinateLabel.color = PathColor;
+                }
+                
+                return;
+            }
+
+            CoordinateLabel.color = BlockedColor;
+        }
+        else
+        {
+            CoordinateLabel.color = TileWaypoint != null && TileWaypoint.Placeable ? BaseColor : BlockedColor;
+        }
     }
 
     private void ToggleLabels()

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Tower : MonoBehaviour
 {
+    [SerializeField] private float BuildDelay = 1.0f;
     [SerializeField] private int MaxTowerLevel = 5;
     [SerializeField] private int CreateCost = 75;
     [SerializeField] private int MinAttackDamage = 20;
@@ -19,9 +20,14 @@ public class Tower : MonoBehaviour
     [SerializeField] private float UpgradeUIOffsetY = 60.0f;
     [SerializeField] private List<Image> StarImageList = new List<Image>();
     [SerializeField] private float StarsUIOffsetY = 0.0f;
+    [SerializeField] private GameObject TowerBottom = null;
+    [SerializeField] private GameObject TowerHead = null;
+    [SerializeField] private GameObject Arrow = null;
+
+    private Bank UserBank = null;
 
     private int TowerLevel = 1;
-    
+
     public bool IsEnableLevelUp()
     {
         return TowerLevel < MaxTowerLevel ? true : false;
@@ -36,9 +42,76 @@ public class Tower : MonoBehaviour
         SetVisibleUpgradeUI(false);
         InitializeStarsUI();
 
-        if(UpgradeButton != null)
+        if (UpgradeButton != null)
         {
             UpgradeButton.onClick.AddListener(OnClickUpgrade);
+        }
+
+        StartCoroutine(Build());
+    }
+
+    IEnumerator Build()
+    {
+        if(TowerBottom != null)
+        {
+            TowerBottom.SetActive(false);
+        }
+
+        if(TowerHead != null)
+        {
+            TowerHead.SetActive(false);
+        }
+
+        if(Arrow != null)
+        {
+            Arrow.SetActive(false);
+        }
+
+        if(TowerBottom != null)
+        {
+            TowerBottom.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(BuildDelay);
+
+        if(TowerHead != null)
+        {
+            TowerHead.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(BuildDelay);
+
+        if(Arrow != null)
+        {
+            Arrow.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    private void Update()
+    {
+        CheckUpgradeUI();
+    }
+
+    private void CheckUpgradeUI()
+    {
+        if (UserBank == null)
+        {
+            return;
+        }
+
+        if (UpgradeUI == null || !UpgradeUI.activeSelf)
+        {
+            return;
+        }
+
+        int NeedGold = TowerLevel * 50;
+        bool EnableUpgrade = UserBank.Gold >= NeedGold ? true : false;
+        if (UpgradeButton.interactable != EnableUpgrade)
+        {
+            UpgradeButton.interactable = EnableUpgrade;
         }
     }
 
@@ -49,18 +122,18 @@ public class Tower : MonoBehaviour
             return null;
         }
 
-        Bank UserBank = FindObjectOfType<Bank>();
-        if (UserBank == null)
+        Bank bank = FindObjectOfType<Bank>();
+        if (bank == null)
         {
             return null;
         }
 
-        if (UserBank.Gold < CreateCost)
+        if (bank.Gold < CreateCost)
         {
             return null;
         }
 
-        UserBank.ChangeGold(-CreateCost);
+        bank.ChangeGold(-CreateCost);
         return Instantiate(tower.gameObject, CreatePosition, Quaternion.identity);
     }
 
@@ -73,15 +146,22 @@ public class Tower : MonoBehaviour
 
     public void SetVisibleUpgradeUI(bool Visible)
     {
-        if(MaskBGUI != null)
+        if (UserBank == null)
+        {
+            UserBank = FindObjectOfType<Bank>();
+            if (UserBank == null)
+            {
+                return;
+            }
+        }
+
+        if (MaskBGUI != null)
         {
             MaskBGUI.SetActive(Visible);
         }
 
         if (UpgradeUI != null)
         {
-            UpgradeUI.SetActive(Visible);
-
             if (Visible)
             {
                 Vector3 ScreenPosition = Camera.main.WorldToScreenPoint(transform.position);
@@ -92,7 +172,7 @@ public class Tower : MonoBehaviour
                     UIRect.position = ScreenPosition;
                 }
 
-                if(LevelUpText != null)
+                if (LevelUpText != null)
                 {
                     LevelUpText.text = "Lv." + (TowerLevel + 1);
                 }
@@ -103,20 +183,20 @@ public class Tower : MonoBehaviour
                     UpgradeGoldText.text = NeedGold.ToString();
                 }
 
-                Bank UserBank = FindObjectOfType<Bank>();
                 bool EnableLevelup = UserBank != null ? UserBank.Gold >= NeedGold ? true : false : false;
-                UpgradeButton.enabled = EnableLevelup;
+                UpgradeButton.interactable = EnableLevelup;
             }
+
+            UpgradeUI.SetActive(Visible);
         }
     }
 
     private void OnClickUpgrade()
     {
-        Bank UserBank = FindObjectOfType<Bank>();
-        if(UserBank != null)
+        if (UserBank != null)
         {
             int NeedGold = TowerLevel * 50;
-            if(UserBank.Gold >= NeedGold)
+            if (UserBank.Gold >= NeedGold)
             {
                 UserBank.ChangeGold(-NeedGold);
                 TowerLevel++;
@@ -135,7 +215,7 @@ public class Tower : MonoBehaviour
 
     private void InitializeStarsUI()
     {
-        if(StarsUI != null)
+        if (StarsUI != null)
         {
             Vector3 ScreenPosition = Camera.main.WorldToScreenPoint(transform.position);
             RectTransform UIRect = StarsUI.GetComponent<RectTransform>();
@@ -149,9 +229,9 @@ public class Tower : MonoBehaviour
 
     private void UpdateStarsUI()
     {
-        for(int i = 0 ; i < StarImageList.Count ; ++i)
+        for (int i = 0; i < StarImageList.Count; ++i)
         {
-            if(StarImageList[i] != null)
+            if (StarImageList[i] != null)
             {
                 StarImageList[i].gameObject.SetActive(i < TowerLevel ? true : false);
             }

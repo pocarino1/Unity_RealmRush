@@ -21,6 +21,12 @@ public class ObjectPool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Invoke("StartSpawnEnemy", 1.0f);
+        StartCoroutine(SpawnEnemy());
+    }
+
+    private void StartSpawnEnemy()
+    {
         StartCoroutine(SpawnEnemy());
     }
 
