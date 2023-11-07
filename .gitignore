@@ -6,6 +6,7 @@ Packages
 obj
 Builds
 AndroidBuilds
+WebGLBuilds
 
 .gradle/
 
